@@ -1,0 +1,273 @@
+"""
+Created on Tue Jan 18 2022
+
+@author: Victoria Wilczynski
+
+Title: DEPENDENCE OF THE ROTATION NUMBER OF THE
+RESTRICTION OF BILLIARD MAPS TO A COMMON CAUSTICS
+"""
+
+#import json file
+import json
+
+#import math
+import math
+ 
+#can we make the file be a specific name?
+with open('test.json') as f:
+    seq = json.load(f)
+    
+a_n = seq["a_n"]
+b_n = seq["b_n"]
+
+def mod_2pi(x):
+    '''
+    Returns x mod 2pi
+
+    Parameters
+    ----------
+    x : number
+
+    Returns
+    -------
+    x mod 2pi
+
+    '''
+    return math.fmod(x, 2*math.pi)
+
+def check_interval(p,q):
+    '''
+    Checks that p,qe[0,2pi). If q<p, add 2pi to q to get correct interval.
+
+    Parameters
+    ----------
+    p: first angle
+    q: second angle
+
+    Returns
+    -------
+    Modified p,q
+
+    '''
+    if p<0 or p>=(2*math.pi) or q<0 or q>=(2*math.pi):
+        raise ValueError
+    
+    if q<p:
+        while q<p:
+            q = q+2*math.pi
+    
+    return p,q
+
+
+#compute distance between two points
+def distance(a,b):
+    '''
+    Compute the distance between a=(x_1,y_1) and b=(x_2,y_2)
+
+    Parameters
+    ----------
+    a : Tuple/list, coordinates
+    b : Tuple/list, coordinates
+
+    Returns
+    -------
+    Float, the distance between the two points
+
+    '''
+    x1 = a[0]
+    x2 = b[0]
+    y1 = a[1]
+    y2 = b[1]
+    
+    d = ((x2-x1)**2 + (y2-y1)**2)**(1/2)
+    
+    return d
+
+#compute trig polynomial
+def trig_poly(theta):
+    '''
+    Returns the trig polynomial value from the sequences a_n, b_n
+    and a given theta
+
+    Parameters
+    ----------
+    theta: radius of curvature of curve at point identified by theta
+
+    Returns
+    -------
+    A numerical value p(theta)
+
+    '''
+    #a_n and b_n are global variables
+    #a_0 is related to perimeter of curve 
+    a_0 = a_n[0]
+    
+    #summation goes from k=2 to M to enforce tangent angle param
+    N = len(a_n)
+    k = 2
+    
+    summation = 0
+    
+    #computing summation
+    for i in range(k,N+1):
+        summation += (a_n[i]*math.cos(i*theta))+(b_n[i]*math.sin(i*theta))
+
+    p_t = a_0 + summation
+    
+    return p_t
+
+
+#x(theta)
+def x_theta(theta):
+    '''
+    Returns x coordinate given theta.
+
+    Parameters
+    ----------
+    theta : float, angle given
+
+    Returns
+    -------
+    x(theta)
+
+    '''
+    #derived this formula in write-up
+    a_0 = a_n[0]
+    
+    N = len(a_n)
+    k = 2
+    
+    summation = 0
+    
+    for i in range(k,N+1):
+        #first part of summation with * a_k
+        a1 = (1/(i+1))*math.sin(i*theta + theta)
+        a2 = (1/(1-i))*math.sin(theta - i*theta)
+        a = a_n[i]*(a1+a2)
+        
+        #second part of summation with * b_k
+        b1 = (-1/(i+1))*math.cos(i*theta + theta)
+        b2 = (1/(1-i))*math.cos(i*theta - theta)
+        b3 = (-1/(i+1))-(1/(1-k))
+        b = b_n[i]*((b1-b2)-b3)
+        
+        #adding to total summation
+        summation += (a+b)
+        
+    #getting final x coordinate
+    x = (a_0*math.sin(theta))+(1/2)*(summation)
+    
+    return x
+
+#y(theta)
+def y_theta(theta):
+    '''
+    Returns y coordinate given theta.
+
+    Parameters
+    ----------
+    theta : float, angle given
+
+    Returns
+    -------
+    y(theta)
+
+    '''
+    #derived this formula in writeup
+    a_0 = a_n[0]
+    
+    N = len(a_n)
+    k = 2
+    
+    summation = 0
+    
+    for i in range(k,N+1):
+        #first part of summation with * a_k
+        a1 = (-1/(i+1))*math.cos(i*theta + theta)
+        a2 = (1/(1-i))*math.cos(theta - i*theta)
+        a3 = (-1/(i+1))-(1/(1-k))
+        a = a_n[i]*((a1-a2)-a3)
+        
+        #second part of summation with * b_k
+        b1 = (-1/(i+1))*math.sin(i*theta + theta)
+        b2 = (1/(1-i))*math.sin(theta - i*theta)
+        b = b_n[i]*((b1+b2))
+        
+        #adding to total summation
+        summation += (a+b)
+        
+    #getting final x coordinate
+    y = (a_0*(-math.cos(theta)))+(1/2)*(summation)
+    
+    return y
+
+#length(theta, theta')
+def length(p,q):
+    '''
+    Calculates length given the angles p and q.
+    Let p=theta, q=theta'
+    
+    Parameters
+    ----------
+    p : angle
+    q : angle
+
+    Returns
+    -------
+    length of the arc between p and q
+
+    '''
+    #first check and make sure p,q correct interval
+    p,q = check_interval(p,q)
+    
+    a_0 = a_n[0]
+
+    N = len(a_n)
+    k = 2
+    
+    summation = 0
+    
+    for i in range(2,N+1):
+        a = a_n[i]*(math.sin(i*q)-math.sin(i*p))
+        b = b_n[i]*(-1*math.cos(i*q)+math.cos(i*p))
+        summation += (a+b)
+        
+    l = (a_0*(q-p))+(1/k)*summation
+    
+    return l
+
+def intersection(L,K):
+    '''
+    Gives the lines L and K 
+    
+
+    Parameters
+    ----------
+    L : tuple/list, includes x and y coordinate of a point on L,
+        and the angle L makes with the horizontal
+    K : tuple/list, includes x and y coordinate of a point on K,
+        and the angle K makes with the horizontal
+
+    Returns
+    -------
+    Intersection point a=(x,y)
+
+    '''
+    x,y,t = L
+    w,z,s = K
+    
+    if t == s:
+        return None
+    if x==w and y==z:
+        return (x,y)
+    
+    slope_L = math.tan(t)
+    slope_K = math.tan(s)
+    
+    b_L = y-(slope_L*x)
+    b_K = z-(slope_K*w)
+    
+    xi = (b_K-b_L) / (slope_L-slope_K)
+    yi = slope_L * xi + b_L
+    
+    return (xi,yi)
