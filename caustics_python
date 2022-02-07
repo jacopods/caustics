@@ -304,8 +304,8 @@ def intersection(L,K):
     #check anti parallel too, t-s is multiple of pi also never meet
     if float.is_integer((t-s)/math.pi):
         return None
-    #fix this equality too to use functions described above^
-    if check_equality(x,w) and check_equality(y,z): #if points given on both lines are the same
+    #if points given on both lines are the same
+    if check_equality(x,w) and check_equality(y,z): 
         return (x,y)
     
     #parameterize the lines as curves
@@ -324,13 +324,12 @@ def intersection(L,K):
     
     B = np.array([w-x, z-y])
     
-    #gives a and b, then we can plug one of these into our parameterization
+    #gives values for a and b, then we can plug one of these into our parameterization
     X = np.linalg.solve(A,B)
     
     intersection_pt = p1+X[0]*v1
     
     #could also do p2+X[1]*v2
-    
     
     return intersection_pt
 
