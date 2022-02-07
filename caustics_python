@@ -12,6 +12,9 @@ import json
 
 #import math
 import math
+
+#import numpy
+import numpy as np
  
 #can we make the file be a specific name?
 with open('test.json') as f:
@@ -296,18 +299,38 @@ def intersection(L,K):
     x,y,t = L
     w,z,s = K
     
-    if t == s:
+    if check_eq_mod_pi(t,s): #check if angles are the same
         return None
-    if x==w and y==z:
+    #check anti parallel too, t-s is multiple of pi also never meet
+    if float.is_integer((t-s)/math.pi):
+        return None
+    #fix this equality too to use functions described above^
+    if check_equality(x,w) and check_equality(y,z): #if points given on both lines are the same
         return (x,y)
     
-    slope_L = math.tan(t)
-    slope_K = math.tan(s)
+    #parameterize the lines as curves
     
-    b_L = y-(slope_L*x)
-    b_K = z-(slope_K*w)
+    #L = [x,y]+a[cos(t),sin(t)]
+    #K = [w,z]+b[cos(s),sin(s)]
     
-    xi = (b_K-b_L) / (slope_L-slope_K)
-    yi = slope_L * xi + b_L
+    p1 = np.array([x,y])
+    p2 = np.array([w,z])
     
-    return (xi,yi)
+    v1 = np.array([math.cos(t), math.sin(t)])
+    v2 = np.array([math.cos(s), math.sin(s)])
+    
+    #solve the system of equations for a and b
+    A = np.array([[math.cos(t), -math.cos(s)],[math.sin(t), -math.sin(s)]])
+    
+    B = np.array([w-x, z-y])
+    
+    #gives a and b, then we can plug one of these into our parameterization
+    X = np.linalg.solve(A,B)
+    
+    intersection_pt = p1+X[0]*v1
+    
+    #could also do p2+X[1]*v2
+    
+    
+    return intersection_pt
+
