@@ -19,6 +19,7 @@ with open('test.json') as f:
     
 a_n = seq["a_n"]
 b_n = seq["b_n"]
+tol = 1e-17 #can change this value if needed
 
 def mod_2pi(x):
     '''
@@ -57,6 +58,45 @@ def check_interval(p,q):
             q = q+2*math.pi
     
     return p,q
+    
+def check_equality(a,b):
+    '''
+    check if absolute difference of two floats is less than tol
+    (checking for equality between two floats)
+
+    Parameters
+    ----------
+    a : float
+    b : float
+
+    Returns
+    -------
+    True/False
+
+    '''
+    if abs(a-b)<=tol:
+        return True
+    return False
+
+def check_eq_mod_pi(a,b):
+    '''
+    check if abs difference of two floats mod pi is less than tol
+
+    Parameters
+    ----------
+    a : float
+    b : float
+
+    Returns
+    -------
+    True/False
+
+    '''
+    val = math.fmod(abs(a-b), math.pi)
+    
+    if val <= tol:
+        return True
+    return False
 
 
 #compute distance between two points
