@@ -353,3 +353,35 @@ def intersection(L,K):
     
     return intersection_pt
 
+
+def string_len(p,q):
+    '''
+    Returns the string length.
+
+    Parameters
+    ----------
+    #check if these are the correct inputs
+    p : tuple, point and angle with horizontal?
+    q : tuple, point and angle with horizontal?
+
+    Returns
+    -------
+    Float, length of string
+
+    '''
+    #first we need to find r, the intersection point
+    r = intersection(p,q)
+    
+    x,y,t = p
+    w,z,s = q
+    
+    #getting length of the line connecting pr and rq
+    #aka getting distance
+    #|pr| and |rq|
+    pr = distance((x,y),r)
+    rq = distance(r,(w,z))
+    
+    #Length(q,p)
+    l = length(t,s)
+    
+    return l+pr+rq
