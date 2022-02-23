@@ -152,13 +152,33 @@ def trig_poly(theta):
     summation = 0
     
     #computing summation
-    for i in range(k,N+1):
+    for i in range(k,N):
         summation += (a_n[i]*math.cos(i*theta))+(b_n[i]*math.sin(i*theta))
 
     p_t = a_0 + summation
     
     return p_t
 
+#check that p(theta) is convex for every theta
+def convex_check():
+    '''
+    Checks for strongly convex domain, p(theta)>0 for all theta.
+    Returns True if strongly convex, returns False if not.
+
+    Returns
+    -------
+    True/False
+
+    '''
+    #can change 100 to check for even more values
+    #since we don't include 2pi, these values are [0,2pi), don't include endpoint
+    values = np.linspace(0, 2*math.pi, 100, endpoint=False)
+    
+    for i in values:
+        if trig_poly(i)<=0:
+            return False
+        
+    return True
 
 #x(theta)
 def x_theta(theta):
@@ -182,7 +202,7 @@ def x_theta(theta):
     
     summation = 0
     
-    for i in range(k,N+1):
+    for i in range(k,N):
         #first part of summation with * a_k
         a1 = (1/(i+1))*math.sin(i*theta + theta)
         a2 = (1/(1-i))*math.sin(theta - i*theta)
@@ -224,7 +244,7 @@ def y_theta(theta):
     
     summation = 0
     
-    for i in range(k,N+1):
+    for i in range(k,N):
         #first part of summation with * a_k
         a1 = (-1/(i+1))*math.cos(i*theta + theta)
         a2 = (1/(1-i))*math.cos(theta - i*theta)
@@ -270,7 +290,7 @@ def length(p,q):
     
     summation = 0
     
-    for i in range(2,N+1):
+    for i in range(k,N):
         a = a_n[i]*(math.sin(i*q)-math.sin(i*p))
         b = b_n[i]*(-1*math.cos(i*q)+math.cos(i*p))
         summation += (a+b)
