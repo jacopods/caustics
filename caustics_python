@@ -369,19 +369,26 @@ def string_len(p,q):
     Float, length of string
 
     '''
-    #first we need to find r, the intersection point
-    r = intersection(p,q)
+    #check condition
+    check_interval(t,t_p)
     
-    x,y,t = p
-    w,z,s = q
+    #need to find point (x,y) given both angles
+    x_t = x_theta(t)
+    y_t = y_theta(t)
+    
+    x_t_p = x_theta(t_p)
+    y_t_p = y_theta(t_p)
+    
+    #first we need to find r, the intersection point
+    r = intersection([x_t,y_t,t],[x_t_p,y_t_p,t_p])
     
     #getting length of the line connecting pr and rq
     #aka getting distance
     #|pr| and |rq|
-    pr = distance((x,y),r)
-    rq = distance(r,(w,z))
+    pr = distance((x_t,y_t),r)
+    rq = distance(r,(x_t_p,y_t_p))
     
     #Length(q,p)
-    l = length(t,s)
+    l = length(t,t_p)
     
     return l+pr+rq
