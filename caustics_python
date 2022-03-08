@@ -22,6 +22,18 @@ with open('test.json') as f:
     
 a_n = seq["a_n"]
 b_n = seq["b_n"]
+
+if len(a_n) < len(b_n):
+    n = len(b_n)-len(a_n)
+    for i in range(len(a_n), len(a_n)+n):
+        a_n.append(0)
+elif len(b_n) < len(a_n):
+    n = len(a_n)-len(b_n)
+    for i in range(len(b_n), len(b_n)+n):
+        b_n.append(0)
+        
+N=len(a_n)
+
 tol = 1e-17 #can change this value if needed
 
 def mod_2pi(x):
@@ -146,7 +158,6 @@ def trig_poly(theta):
     a_0 = a_n[0]
     
     #summation goes from k=2 to M to enforce tangent angle param
-    N = len(a_n)
     k = 2
     
     summation = 0
@@ -160,6 +171,7 @@ def trig_poly(theta):
     return p_t
 
 #check that p(theta) is convex for every theta
+#TO BE FIXED USING NOTES FROM MEETING ON MAR 4
 def convex_check():
     '''
     Checks for strongly convex domain, p(theta)>0 for all theta.
@@ -197,7 +209,6 @@ def x_theta(theta):
     #derived this formula in write-up
     a_0 = a_n[0]
     
-    N = len(a_n)
     k = 2
     
     summation = 0
@@ -239,7 +250,6 @@ def y_theta(theta):
     #derived this formula in writeup
     a_0 = a_n[0]
     
-    N = len(a_n)
     k = 2
     
     summation = 0
@@ -284,8 +294,7 @@ def length(p,q):
     p,q = check_interval(p,q)
     
     a_0 = a_n[0]
-
-    N = len(a_n)
+    
     k = 2
     
     summation = 0
@@ -392,3 +401,31 @@ def string_len(p,q):
     l = length(t,t_p)
     
     return l+pr+rq
+
+
+#left for sanity check
+def string_curve_ineq(p,q):
+    '''
+    Check that l>|Gamma| (string length is greater than length of curve)
+
+    Parameters
+    ----------
+    p: angle
+    q: angle
+
+    Returns
+    -------
+    True if l>|Gamma|, False otherwise
+
+    '''
+    #find length of string given p and q
+    string = string_len(p, q)
+
+    
+    #length of curve is given by length from p to p' + length from p' to p
+    p1 = length(p, p+math.pi)
+    p2 = length(p+math.pi, p)
+    
+    gamma = p1+p2
+    
+    return string > gamma
