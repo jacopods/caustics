@@ -53,7 +53,8 @@ def mod_2pi(x):
 
 def check_interval(p,q):
     '''
-    Checks that p,qe[0,2pi). If q<p, add 2pi to q to get correct interval.
+    Modifies p and q to be in correct interval.
+    If q<p, add 2pi to q to get correct interval.
 
     Parameters
     ----------
@@ -65,14 +66,14 @@ def check_interval(p,q):
     Modified p,q
 
     '''
-    if p<0 or p>=(2*math.pi) or q<0 or q>=(2*math.pi):
-        raise ValueError
+    p_p = mod_2pi(p)
+    q_p= q+(p_p-p)
     
-    if q<p:
-        while q<p:
-            q = q+2*math.pi
+    if q_p<p_p: #if q is less than p
+        while q_p<p_p: #continue to add 2pi to q until it is greater than p
+            q_p = q_p+2*math.pi
     
-    return p,q
+    return p_p,q_p
     
 def check_equality(a,b):
     '''
@@ -413,7 +414,7 @@ def string_len(p,q):
     rq = distance(r,(x_t_p,y_t_p))
     
     #Length(q,p)
-    l = length(t,t_p)
+    l = length(t,t_p+(2*math.pi))
     
     return l+pr+rq
 
@@ -447,7 +448,7 @@ def string_curve_ineq(p,q):
     
     
 #bisection method to find q
-def find_q(theta):
+def find_q(theta,l):
     '''
     Using bisection method, we find q such that F_ell(p)=q.
     
@@ -471,8 +472,6 @@ def find_q(theta):
     interval = [theta, theta_p]
     
     q = (theta+theta_p)/2
-
-    l = None #figure out this
     
     #once interval is small enough, we stop the loop
     while interval[1]-interval[0] > tol:
@@ -488,5 +487,7 @@ def find_q(theta):
        elif s_l < l:
            #second half of arc
            interval = [q,b]
+       else:
+           return q
          
     return interval[0]
