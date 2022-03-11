@@ -46,7 +46,7 @@ def mod_2pi(x):
 
     Returns
     -------
-    x mod 2pi
+    Float, x mod 2pi
 
     '''
     return math.fmod(x, 2*math.pi)
@@ -63,7 +63,7 @@ def check_interval(p,q):
 
     Returns
     -------
-    Modified p,q
+    Modified p,q (floats)
 
     '''
     p_p = mod_2pi(p)
@@ -147,11 +147,11 @@ def trig_poly(theta):
 
     Parameters
     ----------
-    theta: radius of curvature of curve at point identified by theta
+    theta: float, radius of curvature of curve at point identified by theta
 
     Returns
     -------
-    A numerical value p(theta)
+    A numerical value p(theta), a float
 
     '''
     #a_n and b_n are global variables
@@ -219,7 +219,7 @@ def x_theta(theta):
 
     Returns
     -------
-    x(theta)
+    x(theta), float
 
     '''
     #derived this formula in write-up
@@ -260,7 +260,7 @@ def y_theta(theta):
 
     Returns
     -------
-    y(theta)
+    y(theta), float
 
     '''
     #derived this formula in writeup
@@ -303,7 +303,7 @@ def length(p,q):
 
     Returns
     -------
-    length of the arc between p and q
+    length of the arc between p and q, float
 
     '''
     #first check and make sure p,q correct interval
@@ -338,7 +338,7 @@ def intersection(L,K):
 
     Returns
     -------
-    Intersection point a=(x,y)
+    Intersection point a=(x,y), tuple
 
     '''
     x,y,t = L
@@ -418,16 +418,17 @@ def string_len(p,q):
     
     return l+pr+rq
 
-#gets length of domain aka |gamma|
+#gets length of domain aka |Gamma|
 def domain_len(p):
     '''
-    Returns length of domain (|gamma|).
+    Returns length of domain (|Gamma|).
 
     Returns
     -------
-    float, |gamma|
+    float, |Gamma|
 
     '''
+    #length of curve is given by length from p to p' + length from p' to p
     p1 = length(p, p+math.pi)
     p2 = length(p+math.pi, p)
     
@@ -452,12 +453,7 @@ def string_curve_ineq(p,q):
     #find length of string given p and q
     string = string_len(p, q)
 
-    
-    #length of curve is given by length from p to p' + length from p' to p
-    p1 = length(p, p+math.pi)
-    p2 = length(p+math.pi, p)
-    
-    gamma = p1+p2
+    gamma = domain_len(p)
     
     return string > gamma
    
@@ -473,7 +469,7 @@ def find_q(theta,l):
 
     Returns
     -------
-    float
+    float, optimal q
 
     '''
     #choose q between p and antipodal point
