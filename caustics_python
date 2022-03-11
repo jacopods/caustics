@@ -418,6 +418,21 @@ def string_len(p,q):
     
     return l+pr+rq
 
+#gets length of domain aka |gamma|
+def domain_len(p):
+    '''
+    Returns length of domain (|gamma|).
+
+    Returns
+    -------
+    float, |gamma|
+
+    '''
+    p1 = length(p, p+math.pi)
+    p2 = length(p+math.pi, p)
+    
+    gamma = p1+p2
+    return gamma
 
 #left for sanity check
 def string_curve_ineq(p,q):
@@ -445,23 +460,7 @@ def string_curve_ineq(p,q):
     gamma = p1+p2
     
     return string > gamma
- 
-#gets length of domain aka |gamma|
-def domain_len():
-    '''
-    Returns length of domain (|gamma|).
-
-    Returns
-    -------
-    float, |gamma|
-
-    '''
-    p1 = length(0, math.pi)
-    p2 = length(math.pi, 0)
-    
-    gamma = p1+p2
-    return gamma
-    
+   
     
 #bisection method to find q
 def find_q(theta,l):
@@ -554,7 +553,7 @@ def plot_rotation():
     '''    
     epsilon = 10e-3
     vals = []
-    gamma = domain_len()
+    gamma = domain_len(0)
     end = 1000*gamma
     
     range_loop = np.arange(gamma, end, epsilon).tolist()
