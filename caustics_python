@@ -491,3 +491,63 @@ def find_q(theta,l):
            return q
          
     return interval[0]
+    
+#finding rotation number
+def rotations(l):
+    '''
+    Calculating rotation number for a given domain.
+    
+    Parameters
+    ----------
+    l: float, string length
+
+    Returns
+    -------
+    float, the rotation number (should be in between 0 and 1/2)
+
+    '''
+    #M is number of times we want to loop
+    M = int(10e6)
+    #set theta = 0
+    theta = 0
+    #set number of times around domain = 0
+    p = 0
+    
+    #start looping M times
+    for i in range(M):
+        #map theta to F_ell(theta)
+        theta = find_q(theta, l)
+        
+        #if theta > 2pi, we made it around the domain
+        if theta > 2*math.pi:
+            #increase p by 1
+            p += 1
+            #fix theta be in 0 to 2pi to go around domain again
+            theta = mod_2pi(theta)
+    #return rotation number
+    return p/M        
+    
+#plotting rotation numbers
+def plot_rotation():
+    '''
+    Plots the rotation number as l increases.
+
+    Returns
+    -------
+    None, but gives us a plot
+    '''    
+    epsilon = 10e-3
+    vals = []
+    gamma = domain_len()
+    end = 1000*gamma
+    
+    range_loop = np.arange(gamma, end, epsilon).tolist()
+    
+    for i in range_loop:
+        vals.append(rotations(i))
+        
+    plt.plot(range_loop, vals)
+    plt.title("Rotation Number Given l")
+    plt.xlabel("l (Starting at |Gamma|)")
+    plt.ylabel("Rotation Number")
+        
