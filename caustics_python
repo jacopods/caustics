@@ -170,8 +170,7 @@ def trig_poly(theta):
     
     return p_t
 
-#check that p(theta) is convex for every theta
-#TO BE FIXED USING NOTES FROM MEETING ON MAR 4
+#check that p(theta) is strongly convex
 def convex_check():
     '''
     Checks for strongly convex domain, p(theta)>0 for all theta.
@@ -182,15 +181,31 @@ def convex_check():
     True/False
 
     '''
-    #can change 100 to check for even more values
-    #since we don't include 2pi, these values are [0,2pi), don't include endpoint
-    values = np.linspace(0, 2*math.pi, 100, endpoint=False)
+    #set epsilon
+    epsilon = 1/2
     
-    for i in values:
-        if trig_poly(i)<=0:
-            return False
+    #set up bound M
+    M = 0
+    
+    #finding bound M
+    for i in range(1,N):
+        M += i*(abs(a_n[i])+abs(b_n[i]))
+    
+    values = np.arange(0, ((2*math.pi)/epsilon), epsilon)
+    
+    #evaluate rho(n*epsilon)>M*epsilon for all n in range
+    while epsilon > tol:
+        test = []
+        for n in values:
+            if trig_poly(n*epsilon) > M*epsilon:
+                test.append(True)
+            else:
+                test.append(False)
+        if all(test):
+            return True
+        epsilon = epsilon/2
         
-    return True
+    return False
 
 #x(theta)
 def x_theta(theta):
@@ -429,3 +444,49 @@ def string_curve_ineq(p,q):
     gamma = p1+p2
     
     return string > gamma
+    
+    
+#bisection method to find q
+def find_q(theta):
+    '''
+    Using bisection method, we find q such that F_ell(p)=q.
+    
+    Parameters
+    ----------
+    theta: the angle of the tangent to the point p
+
+    Returns
+    -------
+    float
+
+    '''
+    #choose q between p and antipodal point
+    #antipodal point is theta+pi
+    #compute lenght of string tangent to p and q
+    #if len>l then in first half of arc
+    #if len<l then in second half of arc
+    #iterate until sufficiently small interval 
+    theta_p = theta+math.pi
+    
+    interval = [theta, theta_p]
+    
+    q = (theta+theta_p)/2
+
+    l = None #figure out this
+    
+    #once interval is small enough, we stop the loop
+    while interval[1]-interval[0] > tol:
+       a = interval[0]
+       b = interval[1]
+       q = (a+b)/2
+       
+       s_l = string_len(theta, q)
+       
+       if s_l > l:
+          #first half of arc
+          interval = [a,q]
+       elif s_l < l:
+           #second half of arc
+           interval = [q,b]
+         
+    return interval[0]
