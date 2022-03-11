@@ -445,6 +445,22 @@ def string_curve_ineq(p,q):
     gamma = p1+p2
     
     return string > gamma
+ 
+#gets length of domain aka |gamma|
+def domain_len():
+    '''
+    Returns length of domain (|gamma|).
+
+    Returns
+    -------
+    float, |gamma|
+
+    '''
+    p1 = length(0, math.pi)
+    p2 = length(math.pi, 0)
+    
+    gamma = p1+p2
+    return gamma
     
     
 #bisection method to find q
