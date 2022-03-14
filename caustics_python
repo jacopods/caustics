@@ -15,6 +15,9 @@ import math
 
 #import numpy
 import numpy as np
+
+#import matplotlib
+import matplotlib.pyplot as plt
  
 #can we make the file be a specific name?
 with open('test.json') as f:
